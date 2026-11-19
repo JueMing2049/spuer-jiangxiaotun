@@ -2,44 +2,55 @@
  * hnp-theme.css — 使用者自己的样式层
  *
  * 这个文件归你。上游升级只会替换 src/hnp.css 与 plugins/，永远不会碰这里。
- * 想改配色、间距、字体、圆角，都写在这个文件里，用下面这些变量覆盖即可。
- * 变量名属于兼容承诺，上游不会改名。
+ * 变量名属于兼容承诺，上游不会改名；这里只改成我们自己的取值。
  *
- * 加载顺序：hnp.css 在前，本文件在后。
- *   <link rel="stylesheet" href="src/hnp.css" />
- *   <link rel="stylesheet" href="src/hnp-theme.css" />
+ * 【配色来源】对齐 SAIG 官网（dlife.love）：对首页截图做像素取色，
+ *   底色    #030407（占屏过半的近黑）
+ *   面板    #0a1020 / #070b16
+ *   光晕    #192f77（首屏中段深蓝）
+ *   主强调  #4f7ee8（簇 #405cc0 / #507ee7 的电光蓝）
+ *   次强调  #c9ae82（金色，仅在徽标处出现 26px，属徽标级微色，别大面积铺）
+ *   文本    #eef2fa / #9fabc4 / #6b7794
+ *
+ * 注意：--jade 这个变量名保留了，但它现在的语义是「主强调＝电光蓝」。
+ * 上游按变量名取值，不认语义，所以改名会破坏兼容；要换色只改值。
  */
 
 :root{
   /* 底色与面板 */
-  /* --bg:#0b0910; */
-  /* --panel:#191521; */
-  /* --panel2:#15111c; */
+  --bg:#030407;
+  --panel:#0a1020;
+  --panel2:#070b16;
 
   /* 线条与文字 */
-  /* --line:#2c2538; */
-  /* --txt:#eae4f0; */
-  /* --txt2:#ab9fbb; */
-  /* --txt3:#77708a; */
+  --line:#18233d;
+  --line2:#243657;
+  --txt:#eef2fa;
+  --txt2:#9fabc4;
+  --txt3:#6b7794;
 
-  /* 主色：jade 是强调色，cu 是次强调，vi 是第三色 */
-  /* --jade:#6fd6c4; */
-  /* --cu:#e0a878; */
-  /* --vi:#b892d4; */
+  /* 主强调（电光蓝）/ 次强调（金色）/ 第三色（深蓝光晕） */
+  --jade:#4f7ee8;
+  --cu:#c9ae82;
+  --vi:#192f77;
+  --red:#e08a8a;
 
   /* 圆角与动效曲线 */
-  /* --r:14px; */
-  /* --rs:10px; */
-  /* --ease:cubic-bezier(.22,1,.36,1); */
-
-  /* 字体 */
-  /* --sans:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif; */
-  /* --serif:"Noto Serif SC","Songti SC",Georgia,serif; */
-  /* --mono:"JetBrains Mono",Consolas,monospace; */
+  --r:14px;
+  --rs:10px;
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 
-/* 浅色主题下单独覆盖时写在这里，不要改 hnp.css 里的 [data-theme="light"] 表 */
-/* [data-theme="light"]{ --bg:#fbf8f3; --jade:#0f7a6d; } */
-
-/* 也可以只给某些区块换皮，不影响全站 */
-/* .my-section{ --jade:#e8a33d; } */
+/* 浅色主题：同一条蓝金血统，别回到暖米色 */
+[data-theme="light"]{
+  --bg:#f7f8fb;
+  --panel:#ffffff;
+  --panel2:#f2f5fa;
+  --line:#dfe5f0;
+  --line2:#c7d2e4;
+  --txt:#101a2e;
+  --txt2:#4a5a76;
+  --txt3:#7c8aa3;
+  --jade:#2f5fd0;
+  --cu:#8a6c3c;
+}
