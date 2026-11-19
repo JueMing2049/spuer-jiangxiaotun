@@ -211,7 +211,7 @@
     Object.keys(FIG_NAMES).forEach(function (f) {
       var src = data.figures && data.figures[f] ? data.figures[f] : {};
       figs[f] = {
-        source: 'figures/' + f + '.svg',
+        source: f === 'effect' ? 'figures/effect.png' : 'figures/' + f + '.svg',
         reader: src.reader || '',
         question: src.question || '',
         outOfScope: src.outOfScope || '',

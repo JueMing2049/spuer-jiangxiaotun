@@ -34,7 +34,7 @@ window.SPUER_SEED = {
     'benchmark.executability.agentReady': '65',
     'benchmark.scaleNote': '单页 + 轻服务端，控制在中等体量；3D 与视频均为可选增强，不进主干',
 
-    'effectImage.mode': 'placeholder',
+    'effectImage.mode': 'generated',
     'effectImage.prompt': '意图：让评委在一屏内看懂这是武汉的城市AI接待员。结构：顶部身份条，中部江小豚与一问三入口，右侧行程卡预览，底部四问各一按钮。风格：深色底、单色高光、毛绒质感形象、克制留白。禁忌：不要渐变彩虹、不要赛博蓝紫、不要多栏信息墙。',
 
     'app.name': 'SPUer-江小豚',
