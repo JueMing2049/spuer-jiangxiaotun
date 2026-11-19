@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-label="架构图骨架：页面、应用服务、Gateway、模型四层">
+  <rect width="960" height="540" fill="#fbfbf9"/>
+  <defs>
+    <style>
+      .ink{fill:none;stroke:#2b2b2b;stroke-width:1.5}
+      .box{fill:#ffffff;stroke:#2b2b2b;stroke-width:1.6}
+      .acc{fill:#f2f2ec;stroke:#0f7a6d;stroke-width:2}
+      .dash{fill:none;stroke:#6b6b6b;stroke-width:1.3;stroke-dasharray:5 4}
+      text{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:14px;fill:#2b2b2b}
+      .s{font-size:12px;fill:#6b6b6b}
+      .m{font-family:Consolas,monospace;font-size:11px;fill:#0f7a6d}
+      .ttl{font-size:13px;fill:#4a4a4a}
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="36" class="ttl">架构图骨架 · 四层，边界写清</text>
+
+  <text x="40" y="104" class="s">层 1</text>
+  <rect x="110" y="70" width="600" height="64" rx="8" class="box"/>
+  <text x="132" y="98">页面（同源客户端）</text>
+  <text x="132" y="120" class="s">只管渲染与交互，不持有凭据</text>
+
+  <text x="40" y="209" class="s">层 2</text>
+  <rect x="110" y="175" width="600" height="64" rx="8" class="box"/>
+  <text x="132" y="203">应用服务 scripts/app_server.py</text>
+  <text x="132" y="225" class="s">可选；优雅停止、会话清理、同源接口</text>
+
+  <text x="40" y="314" class="s">层 3</text>
+  <rect x="110" y="280" width="600" height="64" rx="8" class="acc"/>
+  <text x="132" y="308">Gateway WebSocket</text>
+  <text x="132" y="330" class="s">既有协议，身份由宿主注入</text>
+
+  <text x="40" y="419" class="s">层 4</text>
+  <rect x="110" y="385" width="600" height="64" rx="8" class="box"/>
+  <text x="132" y="413">模型（WorkSwarm 会话）</text>
+  <text x="132" y="435" class="s">默认模型由 WorkSwarm 决定，不硬编码</text>
+
+  <path d="M410 134 L410 173" class="ink" marker-end="url(#a)"/>
+  <text x="420" y="158" class="m">fetch 同源路径</text>
+
+  <path d="M410 239 L410 278" class="ink" marker-end="url(#a)"/>
+  <text x="420" y="263" class="m">session.create / chat.send</text>
+
+  <path d="M410 344 L410 383" class="ink" marker-end="url(#a)"/>
+  <text x="420" y="368" class="m">model（不指定）</text>
+
+  <text x="740" y="106" class="s">无 ai 能力时</text>
+  <text x="740" y="126" class="s">这两层不存在</text>
+
+  <path d="M740 300 L730 300" class="dash"/>
+  <text x="740" y="320" class="s">边界：页面不直连模型</text>
+  <text x="740" y="340" class="s">凭据不下发到页面</text>
+
+  <path d="M40 480 L920 480" class="ink"/>
+  <text x="40" y="506" class="s">画这张图的目的，是把"哪些在应用里、哪些在宿主里"这条边界摆到桌面上。</text>
+</svg>

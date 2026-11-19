@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark light" />
+<title>图显前置工作台 · Diagram-First</title>
+<meta name="application-name" content="图显前置工作台" />
+<meta name="description" content="智能体应用开发前的五张图与字段誊写工作台：定级、对标、画图、誊字段、导出范式包。" />
+<link rel="icon" href="assets/app-icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="src/hnp.css" />
+<link rel="stylesheet" href="src/hnp-theme.css" />
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:70px}
+  body{margin:0;color:var(--txt);background:var(--bg);font-family:var(--sans);font-size:15px;line-height:1.75}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 26px 90px}
+
+  .bar{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(11,9,16,.86);border-bottom:1px solid var(--line)}
+  [data-theme="light"] .bar{background:rgba(247,244,239,.9)}
+  .bar__in{max-width:1040px;margin:0 auto;padding:10px 26px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--txt3)}
+  .brand b{color:var(--jade);font-weight:500}
+  .bar__sp{flex:1}
+  .pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--line2);color:var(--txt3)}
+  .pill.draft{color:var(--cu);border-color:rgba(224,168,120,.45)}
+  .pill.final{color:var(--jade);border-color:rgba(111,214,196,.45)}
+
+  h1{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);line-height:1.3;margin:0 0 10px;font-weight:600}
+  h1 em{font-style:normal;color:var(--jade)}
+  .lead{color:var(--txt2);margin:0 0 6px;max-width:680px}
+
+  .stage{padding-top:36px}
+  .stage>h2{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:var(--txt3);
+    text-transform:uppercase;margin:0 0 6px;font-weight:400;display:flex;align-items:center;gap:10px}
+  .stage>h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .stage__why{color:var(--txt2);font-size:13.5px;margin:0 0 16px}
+  .stage.is-locked{opacity:.42;pointer-events:none;filter:saturate(.5)}
+  .lock-note{
+    display:none;font-family:var(--mono);font-size:11.5px;color:var(--cu);
+    border-left:2px solid var(--cu);padding-left:10px;margin:0 0 14px;
+  }
+  .stage.is-locked .lock-note{display:block}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+
+  .field{display:block;margin-bottom:14px}
+  .field__k{display:block;font-family:var(--mono);font-size:11.5px;color:var(--txt3);margin-bottom:5px}
+  .field__k i{font-style:normal;color:var(--red);margin-left:4px}
+  input[type=text],input[type=number],textarea,select{
+    width:100%;font-family:var(--sans);font-size:13.5px;line-height:1.7;color:var(--txt);
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+  }
+  textarea{resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--jade)}
+  .field__hint{display:block;font-size:12px;color:var(--txt3);margin-top:4px}
+  .field.is-missing input,.field.is-missing textarea{border-color:var(--red);background:rgba(232,138,138,.07)}
+
+  .choice{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .choice__btn{
+    font-size:13px;color:var(--txt2);background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:9px 14px;cursor:pointer;transition:.18s;text-align:left;
+  }
+  .choice__btn:hover{border-color:var(--line2);color:var(--txt)}
+  .choice__btn.is-on{color:var(--jade);border-color:rgba(111,214,196,.5);background:rgba(111,214,196,.09)}
+
+  .tabs-wrap .hnp-pane{padding:0}
+  .fig{margin:0 0 14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fbfbf9}
+  .fig img{display:block;width:100%;height:auto}
+  .fig__cap{font-size:12.5px;color:var(--txt2);padding:9px 14px;background:var(--panel2);border-top:1px solid var(--line);margin:0}
+
+  .chead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .chead h3{font-family:var(--serif);font-size:16px;margin:0;font-weight:600}
+  .chead .tag{font-family:var(--mono);font-size:10.5px;color:var(--txt3);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+  .chead .ok{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--txt3)}
+  .chead .ok.is-on{color:var(--jade)}
+
+  .checkline{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--txt2);margin-bottom:12px}
+  .checkline input{width:16px;height:16px;accent-color:#6fd6c4}
+
+  .accept{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+  .accept__q{font-size:13.5px;color:var(--txt);margin-bottom:6px}
+  .accept__q b{font-family:var(--mono);font-size:11px;color:var(--jade);margin-right:6px}
+
+  .out{font-family:var(--mono);font-size:11.5px;color:var(--txt3);white-space:pre-wrap;word-break:break-word}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+
+  @media (max-width:760px){
+    .bar__in{padding:8px 16px}
+    .wrap{padding:0 16px 70px}
+  }
+
+  /* 打印：本级别所有图全部展开，工具栏隐藏，黑白可读 */
+  @media print{
+    .bar,.actions,.hnp-tabs__bar,.hnp-anno-basket,.hnp-anno-pop,.hnp-anno-form{display:none!important}
+    body{background:#fff;color:#000}
+    .card,.fig{border-color:#bbb;break-inside:avoid}
+    .hnp-pane{display:block!important;page-break-inside:avoid}
+    .stage.is-locked{opacity:1;pointer-events:auto}
+    .lock-note{display:none}
+    .field__hint,.lead,.stage__why{color:#444}
+  }
+</style>
+</head>
+<body data-hnp="anno">
+
+<div class="bar">
+  <div class="bar__in">
+    <span class="brand">图显前置 <b>DIAGRAM-FIRST</b></span>
+    <span class="pill" id="level-pill">未定级</span>
+    <span class="pill" id="gate-pill">0 / 0 图已确认</span>
+    <span class="bar__sp"></span>
+    <span class="pill draft" id="status-pill">草稿</span>
+    <button class="hnp-btn" type="button" id="btn-print">打印</button>
+    <button class="hnp-btn" type="button" id="btn-json">导出 JSON</button>
+    <button class="hnp-btn pri" type="button" id="btn-md">导出 Markdown</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header style="padding:46px 0 4px">
+    <h1>先看见，<em>再动手</em></h1>
+    <p class="lead">这是给智能体应用开发用的前置工作台。先过五张图，再把结论誊进字段；导出两份东西——
+      机器读的 <code>diagram-first.json</code>、人读的 <code>app-spec.md</code>。填完之前，后面每一段都是锁着的。</p>
+    <p class="lead" style="font-size:13px">图是只读骨架，不是成品图。要改图里的字，编辑 <code>figures/*.svg</code>——它们是文本，能 diff、能评审、能替换。</p>
+  </header>
+
+  <!-- ============ 阶段 0 · 定级 ============ -->
+  <section class="stage" data-block="stage-0" id="stage0">
+    <h2>阶段 0 · 定级</h2>
+    <p class="stage__why">流程强度要匹配复杂度。Quick 只画两张图、只过一道门，别让小事被流程压死。</p>
+    <div class="card">
+      <div class="chead"><h3>这次做多大</h3><span class="tag" id="fig-count-tag">按级别决定画几张</span></div>
+      <div class="choice" data-group="complexity.level">
+        <button class="choice__btn" type="button" data-value="quick">Quick · 纯静态工具，无 AI</button>
+        <button class="choice__btn" type="button" data-value="light">Light · 单角色 AI，无需服务端</button>
+        <button class="choice__btn" type="button" data-value="full">Full · Team NPC / 要服务端 / 多页面</button>
+      </div>
+      <label class="field">
+        <span class="field__k">为什么是这个级别</span>
+        <input type="text" data-spec="complexity.reason" placeholder="一句话说明判断依据" />
+      </label>
+    </div>
+  </section>
+
+  <!-- ============ 阶段 1 · 对标 ============ -->
+  <section class="stage is-locked" data-block="stage-1" id="stage1">
+    <h2>阶段 1 · 对标（BDMP）</h2>
+    <p class="stage__why">效果图不凭空画。先找可借鉴的结构，再决定借什么——这是"生产前看到 80%"的来处。</p>
+    <p class="lock-note">先在阶段 0 选定级别。</p>
+
+    <div class="card">
+      <div class="chead"><h3>从哪儿起手</h3></div>
+      <div class="choice" data-group="benchmark.entry">
+        <button class="choice__btn" type="button" data-value="idea">A · 朴素灵感</button>
+        <button class="choice__btn" type="button" data-value="reference">B · 明确对标</button>
+      </div>
+    </div>
+
+    <div class="card" data-block="stage-1-refs">
+      <div class="chead"><h3>参考清单</h3><span class="tag">Quick 可留空</span></div>
+      <div class="grid2">
+        <label class="field">
+          <span class="field__k">参考 1 名称</span>
+          <input type="text" data-spec="benchmark.refs.0.name" placeholder="哪个产品或页面" />
+        </label>
+        <label class="field">
+          <span class="field__k">借它什么</span>
+          <select data-spec="benchmark.refs.0.borrow">
+            <option value="">未选</option>
+            <option value="layout">布局</option>
+            <option value="interaction">交互</option>
+            <option value="style">风格</option>
+            <option value="content">内容</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__k">参考 2 名称</span>
+          <input type="text" data-spec="benchmark.refs.1.name" placeholder="可留空" />
+        </label>
+        <label class="field">
+          <span class="field__k">借它什么</span>
+          <select data-spec="benchmark.refs.1.borrow">
+            <option value="">未选</option>
+            <option value="layout">布局</option>
+            <option value="interaction">交互</option>
+            <option value="style">风格</option>
+            <option value="content">内容</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="chead"><h3>六层拆解</h3><span class="tag">每层写"能借鉴什么"</span></div>
+      <div class="grid2">
+        <label class="field"><span class="field__k">布局</span><textarea rows="2" data-spec="benchmark.layers.layout"></textarea></label>
+        <label class="field"><span class="field__k">组件</span><textarea rows="2" data-spec="benchmark.layers.component"></textarea></label>
+        <label class="field"><span class="field__k">交互</span><textarea rows="2" data-spec="benchmark.layers.interaction"></textarea></label>
+        <label class="field"><span class="field__k">数据</span><textarea rows="2" data-spec="benchmark.layers.data"></textarea></label>
+        <label class="field"><span class="field__k">风格</span><textarea rows="2" data-spec="benchmark.layers.style"></textarea></label>
+        <label class="field"><span class="field__k">内容</span><textarea rows="2" data-spec="benchmark.layers.content"></textarea></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="chead"><h3>可执行度与体量</h3></div>
+      <div class="grid3">
+        <label class="field"><span class="field__k">机制可提取 %</span><input type="number" min="0" max="100" data-spec="benchmark.executability.mechanism" /></label>
+        <label class="field"><span class="field__k">风格可萃取 %</span><input type="number" min="0" max="100" data-spec="benchmark.executability.style" /></label>
+        <label class="field"><span class="field__k">可交给 Agent %</span><input type="number" min="0" max="100" data-spec="benchmark.executability.agentReady" /></label>
+      </div>
+      <div class="choice" data-group="benchmark.scale">
+        <button class="choice__btn" type="button" data-value="light">轻量 · 少于 1 万行</button>
+        <button class="choice__btn" type="button" data-value="medium">中量 · 1–50 万行</button>
+        <button class="choice__btn" type="button" data-value="heavy">重量 · 50 万行以上</button>
+      </div>
+      <label class="field">
+        <span class="field__k">体量说明</span>
+        <input type="text" data-spec="benchmark.scaleNote" placeholder="阈值是示例，按团队能力调整" />
+      </label>
+    </div>
+  </section>
+
+  <!-- ============ 阶段 2 · 画图 ============ -->
+  <section class="stage is-locked" data-block="stage-2" id="stage2">
+    <h2>阶段 2 · 画图</h2>
+    <p class="stage__why">五张图各管一件事。每张先答"给谁看 / 答什么问 / 明确不答什么"，再勾"已确认"。</p>
+    <p class="lock-note">先完成阶段 1（Light 及以上需要至少一条参考）。</p>
+
+    <div class="hnp-tabs tabs-wrap" data-hnp="tabs">
+      <div class="hnp-tabs__bar">
+        <button class="hnp-tab" type="button" data-fig="effect">效果图</button>
+        <button class="hnp-tab" type="button" data-fig="flow">流程图</button>
+        <button class="hnp-tab" type="button" data-fig="orchestration">编排图</button>
+        <button class="hnp-tab" type="button" data-fig="architecture">架构图</button>
+        <button class="hnp-tab" type="button" data-fig="sequence">时序图</button>
+      </div>
+
+      <div class="hnp-pane" data-fig="effect" data-block="fig-effect">
+        <div class="card">
+          <div class="chead">
+            <h3>效果图 · 长什么样</h3>
+            <span class="ok" data-confirm-label="effect"></span>
+          </div>
+          <figure class="fig">
+            <img src="figures/effect.svg" alt="效果图骨架：设备框与三个区域" />
+            <figcaption class="fig__cap">骨架是示意，不是效果图。真图放进来之前，这里只是占位。</figcaption>
+          </figure>
+
+          <div class="grid2">
+            <label class="field">
+              <span class="field__k">这张图怎么来</span>
+              <select data-spec="effectImage.mode">
+                <option value="placeholder">占位（先讨论结构）</option>
+                <option value="generated">由生图模型生成</option>
+                <option value="uploaded">已有参考图，直接放进来</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__k">放入 / 替换效果图</span>
+              <input type="file" accept="image/*" id="effect-file" />
+              <span class="field__hint">浏览器不能写盘：选好后点「保存这张图」下载成 effect.png，放进 figures/ 即可。</span>
+            </label>
+          </div>
+          <div class="actions" style="margin-bottom:14px">
+            <button class="hnp-btn" type="button" id="btn-save-effect">保存这张图</button>
+            <img id="effect-preview" alt="" style="display:none;max-height:120px;border-radius:10px;border:1px solid var(--line)" />
+          </div>
+
+          <label class="field">
+            <span class="field__k">生图提示词（四段：意图 / 结构 / 风格 / 禁忌）</span>
+            <textarea rows="5" data-spec="effectImage.prompt" placeholder="意图：一句话说清这是什么界面。&#10;结构：从上到下有哪些区域、每个区域放什么。&#10;风格：配色、密度、圆角、字体气质。&#10;禁忌：不要什么（例如不要渐变、不要插画）。"></textarea>
+          </label>
+
+          <div class="grid3">
+            <label class="field"><span class="field__k">给谁看<i>*</i></span><textarea rows="2" data-spec="figures.effect.reader"></textarea></label>
+            <label class="field"><span class="field__k">回答什么问题<i>*</i></span><textarea rows="2" data-spec="figures.effect.question"></textarea></label>
+            <label class="field"><span class="field__k">明确不回答什么<i>*</i></span><textarea rows="2" data-spec="figures.effect.outOfScope"></textarea></label>
+          </div>
+          <label class="checkline"><input type="checkbox" data-spec="figures.effect.confirmed" /> 这张图已确认（改图请直接编辑 figures/effect.svg）</label>
+        </div>
+      </div>
+
+      <div class="hnp-pane" data-fig="flow" data-block="fig-flow">
+        <div class="card">
+          <div class="chead"><h3>流程图 · 谁在什么时候做什么</h3><span class="ok" data-confirm-label="flow"></span></div>
+          <figure class="fig">
+            <img src="figures/flow.svg" alt="流程图骨架：输入到验收的主链与失败重试分支" />
+            <figcaption class="fig__cap">主链之外，把失败与重试也画进来——没有回退路径的图，通常没想清失败怎么办。</figcaption>
+          </figure>
+          <div class="grid3">
+            <label class="field"><span class="field__k">给谁看<i>*</i></span><textarea rows="2" data-spec="figures.flow.reader"></textarea></label>
+            <label class="field"><span class="field__k">回答什么问题<i>*</i></span><textarea rows="2" data-spec="figures.flow.question"></textarea></label>
+            <label class="field"><span class="field__k">明确不回答什么<i>*</i></span><textarea rows="2" data-spec="figures.flow.outOfScope"></textarea></label>
+          </div>
+          <label class="checkline"><input type="checkbox" data-spec="figures.flow.confirmed" /> 这张图已确认</label>
+        </div>
+      </div>
+
+      <div class="hnp-pane" data-fig="orchestration" data-block="fig-orchestration">
+        <div class="card">
+          <div class="chead"><h3>编排图 · 先后、并行、阻塞</h3><span class="ok" data-confirm-label="orchestration"></span></div>
+          <figure class="fig">
+            <img src="figures/orchestration.svg" alt="编排图骨架：任务依赖、并行与质量门" />
+            <figcaption class="fig__cap">每个 gate 都要写明查什么、谁来判；虚线是回退路径。</figcaption>
+          </figure>
+          <div class="grid3">
+            <label class="field"><span class="field__k">给谁看<i>*</i></span><textarea rows="2" data-spec="figures.orchestration.reader"></textarea></label>
+            <label class="field"><span class="field__k">回答什么问题<i>*</i></span><textarea rows="2" data-spec="figures.orchestration.question"></textarea></label>
+            <label class="field"><span class="field__k">明确不回答什么<i>*</i></span><textarea rows="2" data-spec="figures.orchestration.outOfScope"></textarea></label>
+          </div>
+          <label class="checkline"><input type="checkbox" data-spec="figures.orchestration.confirmed" /> 这张图已确认</label>
+        </div>
+      </div>
+
+      <div class="hnp-pane" data-fig="architecture" data-block="fig-architecture">
+        <div class="card">
+          <div class="chead"><h3>架构图 · 系统怎么搭</h3><span class="ok" data-confirm-label="architecture"></span></div>
+          <figure class="fig">
+            <img src="figures/architecture.svg" alt="架构图骨架：页面、应用服务、Gateway、模型四层" />
+            <figcaption class="fig__cap">这张图的目的，是把"哪些在应用里、哪些在宿主里"摆到桌面上。</figcaption>
+          </figure>
+          <div class="grid3">
+            <label class="field"><span class="field__k">给谁看<i>*</i></span><textarea rows="2" data-spec="figures.architecture.reader"></textarea></label>
+            <label class="field"><span class="field__k">回答什么问题<i>*</i></span><textarea rows="2" data-spec="figures.architecture.question"></textarea></label>
+            <label class="field"><span class="field__k">明确不回答什么<i>*</i></span><textarea rows="2" data-spec="figures.architecture.outOfScope"></textarea></label>
+          </div>
+          <label class="checkline"><input type="checkbox" data-spec="figures.architecture.confirmed" /> 这张图已确认</label>
+        </div>
+      </div>
+
+      <div class="hnp-pane" data-fig="sequence" data-block="fig-sequence">
+        <div class="card">
+          <div class="chead"><h3>时序图 · 一轮谁说话、到哪算结束</h3><span class="ok" data-confirm-label="sequence"></span></div>
+          <figure class="fig">
+            <img src="figures/sequence.svg" alt="时序图骨架：玩家、leader、角色与服务的消息顺序与回合收口" />
+            <figcaption class="fig__cap">单角色时删掉 leader 与角色B 两条泳道；纯静态工具整张图不需要。</figcaption>
+          </figure>
+          <div class="grid3">
+            <label class="field"><span class="field__k">给谁看<i>*</i></span><textarea rows="2" data-spec="figures.sequence.reader"></textarea></label>
+            <label class="field"><span class="field__k">回答什么问题<i>*</i></span><textarea rows="2" data-spec="figures.sequence.question"></textarea></label>
+            <label class="field"><span class="field__k">明确不回答什么<i>*</i></span><textarea rows="2" data-spec="figures.sequence.outOfScope"></textarea></label>
+          </div>
+          <label class="checkline"><input type="checkbox" data-spec="figures.sequence.confirmed" /> 这张图已确认</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 阶段 3 · 誊字段 ============ -->
+  <section class="stage is-locked" data-block="stage-3" id="stage3">
+    <h2>阶段 3 · 誊字段</h2>
+    <p class="stage__why">把图上的结论誊成结构化字段。每个字段都标了它来自哪张图——对不上就说明图没画清。</p>
+    <p class="lock-note">先把这个级别要求的图全部确认。</p>
+
+    <div class="card" data-block="stage-3-app">
+      <div class="chead"><h3>项目卡</h3><span class="tag">来自效果图</span></div>
+      <div class="grid2">
+        <label class="field"><span class="field__k">应用名称<i>*</i></span><input type="text" data-spec="app.name" placeholder="例如：陪练 · Coach" /></label>
+        <label class="field"><span class="field__k">目标用户<i>*</i></span><input type="text" data-spec="app.audience" placeholder="谁会用、在什么场景" /></label>
+      </div>
+      <label class="field"><span class="field__k">一句话说清它是什么<i>*</i></span><input type="text" data-spec="app.oneLine" /></label>
+      <label class="field"><span class="field__k">已有参考（可留空）</span><input type="text" data-spec="app.reference" /></label>
+    </div>
+
+    <div class="card" data-block="stage-3-agent">
+      <div class="chead"><h3>角色与回合</h3><span class="tag">来自时序图</span></div>
+      <div class="choice" data-group="agent.topology">
+        <button class="choice__btn" type="button" data-value="none">无 AI（纯工具）</button>
+        <button class="choice__btn" type="button" data-value="single">单角色</button>
+        <button class="choice__btn" type="button" data-value="team">Team NPC（多角色各自发言）</button>
+      </div>
+      <div class="grid3" id="roles-wrap">
+        <div>
+          <label class="field"><span class="field__k">角色 1 名称<i>*</i></span><input type="text" data-spec="agent.roles.0.name" /></label>
+          <label class="field"><span class="field__k">职责</span><input type="text" data-spec="agent.roles.0.duty" /></label>
+          <label class="field"><span class="field__k">输出 schema</span><input type="text" data-spec="agent.roles.0.outputSchema" placeholder="例如 {\"move\":[r,c]}" /></label>
+        </div>
+        <div>
+          <label class="field"><span class="field__k">角色 2 名称</span><input type="text" data-spec="agent.roles.1.name" /></label>
+          <label class="field"><span class="field__k">职责</span><input type="text" data-spec="agent.roles.1.duty" /></label>
+          <label class="field"><span class="field__k">输出 schema</span><input type="text" data-spec="agent.roles.1.outputSchema" /></label>
+        </div>
+        <div>
+          <label class="field"><span class="field__k">角色 3 名称</span><input type="text" data-spec="agent.roles.2.name" /></label>
+          <label class="field"><span class="field__k">职责</span><input type="text" data-spec="agent.roles.2.duty" /></label>
+          <label class="field"><span class="field__k">输出 schema</span><input type="text" data-spec="agent.roles.2.outputSchema" /></label>
+        </div>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="field__k">需要服务端（app_server.py）<i>*</i></div>
+          <div class="choice" data-group="agent.needsServer">
+            <button class="choice__btn" type="button" data-value="false">不需要（纯静态）</button>
+            <button class="choice__btn" type="button" data-value="true">需要</button>
+          </div>
+        </div>
+        <div>
+          <div class="field__k">需要 ai 能力<i>*</i></div>
+          <div class="choice" data-group="agent.needsAI">
+            <button class="choice__btn" type="button" data-value="false">不需要</button>
+            <button class="choice__btn" type="button" data-value="true">需要</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-block="stage-3-gates">
+      <div class="chead"><h3>五段与质量门</h3><span class="tag">来自编排图</span></div>
+      <div class="hnp-tl" data-hnp="timeline">
+        <div class="hnp-tl__i"><div class="hnp-tl__d">G0</div><div class="hnp-tl__t">问清楚</div>
+          <p class="hnp-tl__p">目标、边界、验收标准、不做什么。</p>
+          <label class="field" style="margin:8px 0 0"><span class="field__k">门判据</span><input type="text" data-spec="orchestration.0.gate" value="需求可被回答，边界与不做的清单已列" /></label>
+          <label class="checkline"><input type="checkbox" data-spec="orchestration.0.done" /> 已通过</label>
+        </div>
+        <div class="hnp-tl__i"><div class="hnp-tl__d">G1</div><div class="hnp-tl__t">画图纸</div>
+          <p class="hnp-tl__p">五张图 + 字段，看的是同一张图。</p>
+          <label class="field" style="margin:8px 0 0"><span class="field__k">门判据</span><input type="text" data-spec="orchestration.1.gate" value="图与结构一致，字段无空" /></label>
+          <label class="checkline"><input type="checkbox" data-spec="orchestration.1.done" /> 已通过</label>
+        </div>
+        <div class="hnp-tl__i"><div class="hnp-tl__d">G2</div><div class="hnp-tl__t">动手做</div>
+          <p class="hnp-tl__p">按图施工，小步提交，每步能回到图上位置。</p>
+          <label class="field" style="margin:8px 0 0"><span class="field__k">门判据</span><input type="text" data-spec="orchestration.2.gate" value="真实多轮与边界场景通过" /></label>
+          <label class="checkline"><input type="checkbox" data-spec="orchestration.2.done" /> 已通过</label>
+        </div>
+        <div class="hnp-tl__i"><div class="hnp-tl__d">G3</div><div class="hnp-tl__t">分步验</div>
+          <p class="hnp-tl__p">每段有 gate，不过不进下一步。</p>
+          <label class="field" style="margin:8px 0 0"><span class="field__k">门判据</span><input type="text" data-spec="orchestration.3.gate" value="停止后会话已清理，刷新与重启状态一致" /></label>
+          <label class="checkline"><input type="checkbox" data-spec="orchestration.3.done" /> 已通过</label>
+        </div>
+        <div class="hnp-tl__i"><div class="hnp-tl__d">—</div><div class="hnp-tl__t">收尾记档</div>
+          <p class="hnp-tl__p">复盘、归档、更新图与知识。</p>
+          <label class="field" style="margin:8px 0 0"><span class="field__k">归档物</span><input type="text" data-spec="orchestration.4.gate" value="复盘 + 更新后的图源" /></label>
+          <label class="checkline"><input type="checkbox" data-spec="orchestration.4.done" /> 已完成</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-block="stage-3-accept">
+      <div class="chead"><h3>验收 8 问 + 三条硬指标</h3><span class="tag">来自全部图</span></div>
+
+      <div class="accept">
+        <div class="accept__q"><b>Q1</b>给谁看？读者是谁，决策者是谁，执行者是谁？</div>
+        <textarea rows="2" data-spec="acceptance.0.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q2</b>回答什么问题？这张图要消除哪个歧义？</div>
+        <textarea rows="2" data-spec="acceptance.1.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q3</b>边界在哪？哪些在范围内，哪些明确不做？</div>
+        <textarea rows="2" data-spec="acceptance.2.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q4</b>验收是什么？什么算完成，谁签字，怎么回滚？</div>
+        <textarea rows="2" data-spec="acceptance.3.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q5</b>证据在哪？关键假设、数据、参考来源是否可追溯？</div>
+        <textarea rows="2" data-spec="acceptance.4.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q6</b>失败会怎样？最坏情况、爆炸半径、停止条件是什么？</div>
+        <textarea rows="2" data-spec="acceptance.5.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q7</b>谁维护？图源在哪，多久更新，过期怎么办？</div>
+        <textarea rows="2" data-spec="acceptance.6.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>Q8</b>能不能打印？离线、黑白、A4 是否还能读？</div>
+        <textarea rows="2" data-spec="acceptance.7.answer"></textarea>
+      </div>
+
+      <div class="accept">
+        <div class="accept__q"><b>H1</b>同角色连续新局 5 次，会话数是否稳定？</div>
+        <textarea rows="2" data-spec="acceptance.8.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>H2</b>刷新 3 次，会话是否不增长？</div>
+        <textarea rows="2" data-spec="acceptance.9.answer"></textarea>
+      </div>
+      <div class="accept">
+        <div class="accept__q"><b>H3</b>停止应用后，会话是否已删除或有待清理记录？</div>
+        <textarea rows="2" data-spec="acceptance.10.answer"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 阶段 4 · 导出 ============ -->
+  <section class="stage" id="stage4">
+    <h2>阶段 4 · 导出</h2>
+    <p class="stage__why">JSON 给机器读（可被 app-builder 直接消费），Markdown 给人读（可直接贴进对话）。</p>
+    <div class="card">
+      <div class="actions">
+        <button class="hnp-btn pri" type="button" id="btn-json-2">导出 JSON</button>
+        <button class="hnp-btn" type="button" id="btn-md-2">导出 Markdown</button>
+        <button class="hnp-btn" type="button" id="btn-check">还差什么</button>
+      </div>
+      <pre class="out" id="open-list" style="margin:14px 0 0">点「还差什么」看看当前缺哪些必答项。</pre>
+    </div>
+  </section>
+</div>
+
+<script src="src/hnp.js"></script>
+<script src="plugins/tabs.js"></script>
+<script src="plugins/timeline.js"></script>
+<script src="plugins/anno.js"></script>
+<script src="scripts/spec.js"></script>
+</body>
+</html>

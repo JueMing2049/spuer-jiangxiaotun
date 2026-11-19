@@ -1,0 +1,26 @@
+{
+  "tool": "hnp-scaffold",
+  "generatedAt": "2026-11-19T10:13:12.563Z",
+  "hnp": {
+    "version": "0.3.0",
+    "commit": "abaed0722f879bdc2faa567d5968f25df1efa19a",
+    "repo": "https://github.com/JueMing2049/html-native-plugin"
+  },
+  "template": {
+    "name": "diagram-first",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    "tabs",
+    "timeline",
+    "anno"
+  ],
+  "theme": "src/hnp-theme.css",
+  "files": {
+    "src/hnp.js": "e377078bc94ecde060eab1540f2110f0a5fd2c807b4dec61fe9545328c08986a",
+    "src/hnp.css": "74832b4e06c91dc15bf9ada7a8b6900dfc6649ebe74696bf2e90133a05f6057d",
+    "plugins/tabs.js": "d6f49ccceec9e1e416719b70007c44306f44696940ef929cae6ae9fd89468654",
+    "plugins/timeline.js": "715adf24c9590d82d3b76532bd3ad8761b0856aca70dbcf2d4f3dbd1541887dc",
+    "plugins/anno.js": "a7714c70fa2df060fc648aeab3d64e800cd3ee687fc47083b23fac7c6e1ef734"
+  }
+}

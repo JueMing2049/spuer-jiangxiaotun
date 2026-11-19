@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-label="时序图骨架：玩家、leader、角色与服务的消息顺序与回合收口">
+  <rect width="960" height="540" fill="#fbfbf9"/>
+  <defs>
+    <style>
+      .ink{fill:none;stroke:#2b2b2b;stroke-width:1.4}
+      .live{fill:none;stroke:#c9c9c0;stroke-width:1.2;stroke-dasharray:4 5}
+      .hd{fill:#f2f2ec;stroke:#2b2b2b;stroke-width:1.4}
+      .round{fill:none;stroke:#0f7a6d;stroke-width:1.8;stroke-dasharray:6 5}
+      text{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:13px;fill:#2b2b2b}
+      .s{font-size:11px;fill:#6b6b6b}
+      .m{font-family:Consolas,monospace;font-size:11px;fill:#0f7a6d}
+      .ttl{font-size:13px;fill:#4a4a4a}
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f7a6d"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="30" class="ttl">时序图骨架 · 一轮里谁说话、到哪算结束</text>
+
+  <rect x="46" y="46" width="86" height="34" class="hd"/>
+  <text x="66" y="68">玩家</text>
+  <rect x="186" y="46" width="86" height="34" class="hd"/>
+  <text x="208" y="68">leader</text>
+  <rect x="326" y="46" width="86" height="34" class="hd"/>
+  <text x="348" y="68">角色A</text>
+  <rect x="466" y="46" width="86" height="34" class="hd"/>
+  <text x="488" y="68">角色B</text>
+  <rect x="606" y="46" width="104" height="34" class="hd"/>
+  <text x="622" y="68">应用服务</text>
+  <rect x="766" y="46" width="104" height="34" class="hd"/>
+  <text x="782" y="68">Gateway</text>
+
+  <path d="M89 80 L89 460" class="live"/>
+  <path d="M229 80 L229 460" class="live"/>
+  <path d="M369 80 L369 460" class="live"/>
+  <path d="M509 80 L509 460" class="live"/>
+  <path d="M658 80 L658 460" class="live"/>
+  <path d="M818 80 L818 460" class="live"/>
+
+  <rect x="46" y="92" width="824" height="330" rx="10" class="round"/>
+  <text x="58" y="112" class="m">本轮</text>
+
+  <path d="M89 132 L227 132" class="ink" marker-end="url(#a)"/>
+  <text x="96" y="126" class="s">① 玩家输入</text>
+
+  <path d="M229 176 L367 176" class="ink" marker-end="url(#a)"/>
+  <text x="236" y="170" class="s">② 分配发言</text>
+
+  <path d="M369 220 L656 220" class="ink" marker-end="url(#a)"/>
+  <text x="376" y="214" class="s">③ 角色发言（带角色身份）</text>
+
+  <path d="M658 264 L816 264" class="ink" marker-end="url(#a)"/>
+  <text x="664" y="258" class="m">④ chat.send</text>
+
+  <path d="M818 308 L660 308" class="ink" marker-end="url(#g)"/>
+  <text x="664" y="302" class="m">⑤ res（按 id 匹配）</text>
+
+  <path d="M658 352 L91 352" class="ink" marker-end="url(#g)"/>
+  <text x="300" y="346" class="s">⑥ 逐条渲染，等回合结束再放开输入</text>
+
+  <text x="46" y="446" class="s">收口判据：本轮所有角色都已返回且顺序确定，才允许下一次输入。</text>
+  <text x="46" y="470" class="s">单角色时删掉 leader 与角色B 两条泳道；纯静态工具则整张图不需要。</text>
+  <text x="46" y="494" class="s">失败与超时也画进去：只重发当前增量，不重发全量。</text>
+</svg>

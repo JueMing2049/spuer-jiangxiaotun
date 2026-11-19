@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-label="编排图骨架：任务依赖、并行与质量门">
+  <rect width="960" height="540" fill="#fbfbf9"/>
+  <defs>
+    <style>
+      .ink{fill:none;stroke:#2b2b2b;stroke-width:1.5}
+      .box{fill:#ffffff;stroke:#2b2b2b;stroke-width:1.6}
+      .gate{fill:#f2f2ec;stroke:#0f7a6d;stroke-width:2}
+      .dash{fill:none;stroke:#b06a2c;stroke-width:1.4;stroke-dasharray:5 4}
+      text{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:14px;fill:#2b2b2b}
+      .s{font-size:12px;fill:#6b6b6b}
+      .m{font-family:Consolas,monospace;font-size:11px;fill:#0f7a6d}
+      .w{font-family:Consolas,monospace;font-size:11px;fill:#b06a2c}
+      .ttl{font-size:13px;fill:#4a4a4a}
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/>
+    </marker>
+    <marker id="w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b06a2c"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="36" class="ttl">编排图骨架 · 先后、并行、阻塞</text>
+
+  <rect x="50" y="80" width="140" height="60" rx="8" class="box"/>
+  <text x="72" y="108">需求澄清</text>
+  <text x="72" y="128" class="s">问清楚</text>
+
+  <rect x="230" y="80" width="140" height="60" rx="8" class="box"/>
+  <text x="252" y="108">画图纸</text>
+  <text x="252" y="128" class="s">五张图</text>
+
+  <rect x="410" y="30" width="140" height="56" rx="8" class="box"/>
+  <text x="432" y="56">角色设计</text>
+  <text x="432" y="74" class="s">单角色 / Team</text>
+
+  <rect x="410" y="134" width="140" height="56" rx="8" class="box"/>
+  <text x="432" y="160">页面实现</text>
+  <text x="432" y="178" class="s">按图施工</text>
+
+  <rect x="590" y="80" width="130" height="60" rx="8" class="box"/>
+  <text x="612" y="108">集成</text>
+  <text x="612" y="128" class="s">同源接口</text>
+
+  <polygon points="800,60 848,110 800,160 752,110" class="gate"/>
+  <text x="778" y="106" class="m">G1</text>
+  <text x="770" y="126" class="s">门</text>
+
+  <rect x="868" y="80" width="72" height="60" rx="8" class="box"/>
+  <text x="880" y="108" class="s">上架</text>
+  <text x="876" y="126" class="s">G2/G3</text>
+
+  <path d="M190 110 L228 110" class="ink" marker-end="url(#a)"/>
+  <text x="190" y="100" class="m">G0</text>
+
+  <path d="M370 96 C388 96 392 58 408 58" class="ink" marker-end="url(#a)"/>
+  <path d="M370 124 C388 124 392 162 408 162" class="ink" marker-end="url(#a)"/>
+
+  <path d="M550 58 C572 58 576 96 588 98" class="ink" marker-end="url(#a)"/>
+  <path d="M550 162 C572 162 576 124 588 122" class="ink" marker-end="url(#a)"/>
+
+  <path d="M720 110 L750 110" class="ink" marker-end="url(#a)"/>
+  <path d="M848 110 L866 110" class="ink" marker-end="url(#a)"/>
+
+  <path d="M800 160 L800 210 L480 210 L480 192" class="dash" marker-end="url(#w)"/>
+  <text x="560" y="204" class="w">G1 不过 · 回到实现，不进集成</text>
+
+  <text x="430" y="24" class="s">并行</text>
+  <path d="M392 40 L406 40" class="ink"/>
+
+  <text x="40" y="300" class="s">门不过不进下一步；每个 gate 都要写明"查什么、谁来判"。</text>
+  <text x="40" y="326" class="s">虚线是回退路径——没有回退路径的图，通常也没想清楚失败怎么办。</text>
+
+  <path d="M40 360 L920 360" class="ink"/>
+  <text x="40" y="386" class="s">G0 需求可答 · G1 图与结构一致 · G2 真实多轮与边界 · G3 停止与清理</text>
+</svg>
