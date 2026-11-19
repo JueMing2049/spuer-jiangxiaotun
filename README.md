@@ -1,8 +1,18 @@
-# SPUer-江小猪
+# SPUer-江小豚
 
 已接入 [HNP](https://github.com/JueMing2049/html-native-plugin) 零依赖 HTML 原生交互层，生成版本 `v0.3.0`。
 
 模板：**图显前置工作台**（`diagram-first`）。入口 `index.html`。
+
+## 这个工作台里装的是江小豚
+
+`data/jiangxiaotun.js` 是数据层（挂 `window.SPUER_SEED`），`scripts/seed.js` 在加载后把种子里 60 个字段 + 6 个选择组填进表单并触发重算。所以打开页面即是「Full 级别 / 5 张图已确认 / 定稿」，不是空模板。
+
+- 加 `?empty` 回到空模板（脚本照常加载，只是跳过填充）
+- 改规格只改 `data/jiangxiaotun.js`，不要写进 `index.html`
+- 导出 `diagram-first.json` 的 `status=final` 只表示**图纸与字段定稿**，不表示应用已建成：`orchestration.2/3.done`（动手做、分步验）故意留空，因为应用还没写
+
+**图源仍是骨架**：`figures/*.svg` 沿用模板占位图，五张图的判据（给谁看 / 答什么 / 明确不答什么）已经确认，但图本身还没画。交付前必须替换——图是文本，可 diff、可评审、可换工具重出。
 
 
 ## 已落地的文件
