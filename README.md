@@ -12,7 +12,12 @@
 - 改规格只改 `data/jiangxiaotun.js`，不要写进 `index.html`
 - 导出 `diagram-first.json` 的 `status=final` 只表示**图纸与字段定稿**，不表示应用已建成：`orchestration.2/3.done`（动手做、分步验）故意留空，因为应用还没写
 
-**图源仍是骨架**：`figures/*.svg` 沿用模板占位图，五张图的判据（给谁看 / 答什么 / 明确不答什么）已经确认，但图本身还没画。交付前必须替换——图是文本，可 diff、可评审、可换工具重出。
+**图源进度：一张已出，四张仍是骨架。**
+
+- `figures/effect.png` 是首屏视觉稿，由 `gpt-image-2.5` 生成（1536×1024，提示词即种子里的 `effectImage.prompt`：深色底、玉色高光、江豚形象、底部一行赛题四问、右侧行程卡）。**这是 AI 视觉稿，不是线上实拍。**
+- `figures/{flow,orchestration,architecture,sequence}.svg` 沿用模板占位骨架，判据已确认、图本身还没画，交付前必须替换。
+
+图是文本（SVG）或可替换位图，可 diff、可评审、可换工具重出。真拿到可用截图或成品图，直接覆盖同名文件即可，页面不用改。
 
 
 ## 已落地的文件
